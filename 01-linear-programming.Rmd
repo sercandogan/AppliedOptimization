@@ -1,0 +1,71 @@
+---
+title: "Linear Programming"
+author: "Sercan Doğan"
+date: "1 Mart 2018"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# Definition
+Objective function and constraints are both linear. 
+
+## Library
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lpSolve)
+```
+
+
+## Example
+
+```{r}
+data <- tribble(
+  ~x_cost_per_day, ~y_cost_per_day,
+              180,            160
+  )
+
+production <- tribble(
+  ~high, ~medium, ~low,
+    6, 3, 4,
+    1, 1, 6
+)
+```
+
+
+### Constraints
+```{r}
+const_per_day <- t(production)
+const_weekend <- matrix(c(1,0,0,1), nrow = 2, byrow = T)
+const_negative <- matrix(c(1,0,0,1), nrow = 2, byrow = T)
+
+constraints <- rbind(const_per_day, const_weekend, const_negative)
+
+```
+
+
+### Model
+```{r}
+lp_model <- lp(direction = "min",
+               objective.in = t(data),
+               const.mat = constraints,
+               const.dir = c(">=", ">=", ">=", "<=", "<=", ">=", ">="),
+               const.rhs = c(12, 8, 24, 5, 5, 0, 0))
+
+```
+
+#### Optimal Values of X and Y
+
+```{r}
+lp_model$solution
+```
+
+#### Objective at minimum
+
+```{r}
+lp_model$objval
+```
+
+
+
