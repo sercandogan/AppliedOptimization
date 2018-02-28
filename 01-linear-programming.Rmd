@@ -61,7 +61,7 @@ lp_model <- lp(direction = "min",
 lp_model$solution
 ```
 
-#### Objective at minimum
+#### Objective at minimum
 
 ```{r}
 lp_model$objval
